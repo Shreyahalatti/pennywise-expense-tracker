@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f5">
+  <title>Pennywise — Your money, at a glance</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <section id="auth-screen" class="auth-screen">
+    <div class="auth-card">
+      <a class="brand" href="/" aria-label="Pennywise home"><span class="brand-mark">↗</span><span>pennywise</span></a>
+      <p class="eyebrow">A LITTLE MORE CLARITY</p>
+      <h1 id="auth-title">Welcome back</h1>
+      <p class="auth-copy" id="auth-copy">Sign in to see where your money goes.</p>
+      <form id="auth-form">
+        <label>Email address<input id="auth-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+        <label>Password<input id="auth-password" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="At least 8 characters" required></label>
+        <p id="auth-error" class="form-error" role="alert"></p>
+        <button class="button primary auth-submit" type="submit">Sign in</button>
+      </form>
+      <p class="auth-switch"><span id="auth-switch-text">New to Pennywise?</span> <button id="auth-switch" type="button">Create an account</button></p>
+    </div>
+    <p class="auth-caption">A calmer way to keep track of your money.</p>
+  </section>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <a class="brand" href="#dashboard"><span class="brand-mark">↗</span><span>pennywise</span></a>
+      <p class="nav-label">Workspace</p>
+      <nav class="nav" aria-label="Main navigation">
+        <a class="active" href="#dashboard">▦ <span>Overview</span></a>
+        <a href="#transactions">☷ <span>Transactions</span></a>
+        <a href="#spending">▥ <span>Spending</span></a>
+      </nav>
+      <div class="side-bottom">
+        <div class="tip"><span class="tip-icon">✦</span><strong>Small steps add up</strong><p>Keep an eye on your spending to make room for what matters.</p></div>
+        <div class="profile"><span class="avatar" id="avatar">JD</span><span class="profile-details"><strong id="profile-email"></strong><small>Personal account</small></span><button id="sign-out" class="sign-out" type="button" title="Sign out" aria-label="Sign out">↪</button></div>
+      </div>
+    </aside>
+    <main id="dashboard">
+      <header class="topbar">
+        <div><p class="eyebrow" id="today-label"></p><h1>Good day <span aria-hidden="true">✦</span></h1></div>
+        <div class="top-actions"><label class="sr-only" for="month-select">Select month</label><input id="month-select" type="month"><button id="add-button" class="button primary" type="button"><b>＋</b> Add transaction</button></div>
+      </header>
+      <div id="dashboard-error" class="notice hidden" role="alert"></div>
+      <div id="budget-alerts" class="alerts" aria-live="polite"></div>
+      <section class="stats" aria-label="Monthly summary">
+        <article class="card stat"><div class="stat-top">Total balance <span class="stat-icon purple">◫</span></div><div class="stat-value" id="balance-value">$0.00</div><div class="stat-foot">Income minus expenses this month</div></article>
+        <article class="card stat"><div class="stat-top">Income <span class="stat-icon green">↗</span></div><div class="stat-value" id="income-value">$0.00</div><div class="stat-foot" id="income-foot">Money in this month</div></article>
+        <article class="card stat"><div class="stat-top">Expenses <span class="stat-icon coral">↘</span></div><div class="stat-value" id="expense-value">$0.00</div><div class="stat-foot" id="expense-foot">Money out this month</div></article>
+      </section>
+      <section class="content-grid" aria-label="Spending overview">
+        <article class="card panel"><div class="panel-heading"><div><h2>Cash flow</h2><p>Income vs. expenses over time</p></div><div class="legend"><span><i class="dot income-dot"></i> Income</span><span><i class="dot expense-dot"></i> Expenses</span></div></div><div class="chart-wrap"><svg id="cashflow-chart" role="img" aria-label="Income and expenses bar chart"></svg></div></article>
+        <article class="card panel" id="spending"><div class="panel-heading"><div><h2>Spending by category</h2><p>Where your money goes this month</p></div></div><div id="category-list" class="category-list"></div><div id="budget-list" class="budget-list"></div><button id="budget-button" type="button" class="text-button">＋ Set a category budget</button></article>
+      </section>
+      <section class="card transactions" id="transactions">
+        <div class="transactions-head"><div><h2>Recent transactions</h2><p>Every little detail, all in one place</p></div>
+          <div class="transaction-tools"><label class="search-wrap"><span class="sr-only">Search transactions</span><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Search transactions"></label>
+            <label class="sr-only" for="category-filter">Filter by category</label><select id="category-filter"><option value="">All categories</option></select>
+            <label class="sr-only" for="start-date">Start date</label><input id="start-date" type="date" title="Start date">
+            <label class="sr-only" for="end-date">End date</label><input id="end-date" type="date" title="End date">
+          </div>
+        </div>
+        <div class="table-scroll"><table><thead><tr><th>Name</th><th>Category</th><th>Date</th><th>Amount</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody id="transaction-body"></tbody></table><div id="empty-state" class="empty hidden">No transactions match these filters.</div></div>
+        <div class="table-footer"><span id="transaction-count">Loading transactions…</span><span>Private to your account</span></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-head"><h2 id="modal-title">Add transaction</h2><button id="close-modal" class="close-btn" type="button" aria-label="Close">×</button></div>
+      <form id="transaction-form"><div class="form-grid">
+        <label class="full">Description<input name="description" maxlength="80" placeholder="e.g. Weekly groceries" required></label>
+        <label>Amount<input name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required></label>
+        <label>Type<select name="type" id="transaction-type"><option value="expense">Expense</option><option value="income">Income</option></select></label>
+        <label>Category<select name="category" id="transaction-category" required></select></label>
+        <label>Date<input name="date" type="date" required></label>
+      </div><p id="transaction-error" class="form-error" role="alert"></p><button class="button primary form-submit" type="submit">Save transaction</button></form>
+    </section>
+  </div>
+  <div id="budget-backdrop" class="modal-backdrop hidden">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="budget-title">
+      <div class="modal-head"><h2 id="budget-title">Set a monthly budget</h2><button id="close-budget" class="close-btn" type="button" aria-label="Close">×</button></div>
+      <form id="budget-form"><div class="form-grid">
+        <label>Category<select name="category" id="budget-category"></select></label>
+        <label>Monthly limit<input name="limit" type="number" min="0.01" step="0.01" placeholder="500.00" required></label>
+      </div><p class="budget-month-copy" id="budget-month-copy"></p><p id="budget-error" class="form-error" role="alert"></p><button class="button primary form-submit" type="submit">Save budget</button></form>
+    </section>
+  </div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
